@@ -7,6 +7,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -25,94 +26,61 @@ import java.util.List;
 /**
  * Created by User on 13.08.2017.
  */
-public class HttpClientRequests  {
+public class HttpClientRequests extends Methods {
 
-        HttpClientRequests http = new HttpClientRequests();
+    public String put (String urlPut, String bodyPut) throws Exception{
+        // String urlPut=urlPost+getPostId();
+        org.apache.http.client.HttpClient client = new DefaultHttpClient();
 
-        // HTTP GET request
-
-    public String sendGet() throws Exception {
-
-        String USER_AGENT = "/";
-        String url = "http://soft.it-hillel.com.ua:3000";
-
-        HttpClient client = new DefaultHttpClient();
-        HttpGet request = new HttpGet(url);
-
-        // add request header
-        request.addHeader("User-Agent", USER_AGENT);
-
-        HttpResponse response = client.execute(request);
-
-        System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " +
-                response.getStatusLine().getStatusCode());
-
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent()));
-
-        StringBuffer result = new StringBuffer();
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-
-        //String responseResult;
-        return result.toString();
-        // return responseResult =result.toString() ;
-        //System.out.println(result.toString());
-
+        HttpPut put = new HttpPut(urlPut);
+        //  String xml = "<xml>xxxx</xml>";
+        HttpEntity entity = new ByteArrayEntity(bodyPut.getBytes("UTF-8"));
+        put.addHeader("Content-Type","application/json");
+        put.setEntity(entity);
+        HttpResponse response = client.execute(put);
+        String result = EntityUtils.toString(response.getEntity());
+        //System.out.println(result);
+        return result;
     }
 
+    public String post(String urlPost,String body) throws Exception{
 
-/*
-    // HTTP POST request
-    public void sendPost() throws Exception {
-        String USER_AGENT = "";
-        String url = "http://soft.it-hillel.com.ua:3000/";
-
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(url);
-
-        // add header
-        post.setHeader("User-Agent", USER_AGENT);
-
-        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-        urlParameters.add(new BasicNameValuePair("sn", "C02G8416DRJM"));
-        urlParameters.add(new BasicNameValuePair("cn", ""));
-        urlParameters.add(new BasicNameValuePair("locale", ""));
-        urlParameters.add(new BasicNameValuePair("caller", ""));
-        urlParameters.add(new BasicNameValuePair("num", "12345"));
-
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
-
-        HttpResponse response = client.execute(post);
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + post.getEntity());
-        System.out.println("Response Code : " +
-                response.getStatusLine().getStatusCode());
-
-        BufferedReader rd = new BufferedReader(
-                new InputStreamReader(response.getEntity().getContent()));
-
-        StringBuffer result = new StringBuffer();
-        String line = "";
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-
-        System.out.println(result.toString());
-
-    }
-    */
-    public void post(String uri,String xml) throws Exception{
-        HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(uri);
-      //  String xml = "<xml>xxxx</xml>";
-        HttpEntity entity = new ByteArrayEntity(xml.getBytes("UTF-8"));
+        org.apache.http.client.HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(urlPost);
+        //  String xml = "<xml>xxxx</xml>";
+        HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
+        post.addHeader("Content-Type","application/json");
         post.setEntity(entity);
         HttpResponse response = client.execute(post);
         String result = EntityUtils.toString(response.getEntity());
+        //System.out.println(result);
+        return result;
     }
 
+    public String get(String url) throws Exception{
+        org.apache.http.client.HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(url);
+        //  String xml = "<xml>xxxx</xml>";
+        // HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
+        get.addHeader("Content-Type","application/json");
+        //get.setEntity(entity);
+        HttpResponse response = client.execute(get);
+        String result = EntityUtils.toString(response.getEntity());
+        //System.out.println(result);
+        return result;
+    }
+
+    public String delete(String urlDelete,String bodyDelete) throws Exception{
+
+        org.apache.http.client.HttpClient client = new DefaultHttpClient();
+        HttpPost delete = new HttpPost(urlDelete);
+        //  String xml = "<xml>xxxx</xml>";
+        HttpEntity entity = new ByteArrayEntity(bodyDelete.getBytes("UTF-8"));
+        delete.addHeader("Content-Type","application/json");
+        delete.setEntity(entity);
+        HttpResponse response = client.execute(delete);
+        String result = EntityUtils.toString(response.getEntity());
+        //System.out.println(result);
+        return result;
+    }
 }
