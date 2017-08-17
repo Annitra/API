@@ -57,6 +57,7 @@ public class HttpClientRequests extends Methods {
         return result;
     }
 
+
     public String get(String url) throws Exception{
         org.apache.http.client.HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(url);
@@ -82,5 +83,11 @@ public class HttpClientRequests extends Methods {
         String result = EntityUtils.toString(response.getEntity());
         //System.out.println(result);
         return result;
+    }
+
+    public String creatingNewUser(String role)throws Exception{
+        String input = post("http://soft.it-hillel.com.ua:3000/api/users",
+                "{\"name\": \"User1\", \"phone\": \"123456\", \"role\": \""+role+"\"}");
+        return input;
     }
 }

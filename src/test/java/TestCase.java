@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 public class TestCase extends HttpClientRequests {
 
 
-
-
     @Test (description = "Check the list by GET")
     public void ListOfAllUsers() throws Exception{
         String input= get("http://soft.it-hillel.com.ua:3000/api/users");
@@ -37,7 +35,7 @@ public class TestCase extends HttpClientRequests {
 
     //dependsOnMethods = {"SavingNewUser"}
     @Test (description = "ReSaving new user by PUT")
-    public void ReSavingNewUser()throws Exception{
+    public void SavingNewUser()throws Exception{
 
        //Not work yet
         /*
@@ -49,25 +47,43 @@ public class TestCase extends HttpClientRequests {
                "{\"id\":"+getPostId()+PatternMethod("\"n.+,",postResponse)+",\"strickes\":\"1\",}");
         */
 
-        String input=put("http://soft.it-hillel.com.ua:3000/api/users/136","{\"id\": \"136\", name: \"User1\", phone: \"123456\", role: \"Student\", \"strikes\": \"1\", \"location\": \"\"}");
+        String input=put("http://soft.it-hillel.com.ua:3000/api/users/136",
+                "{\"id\": \"136\", name: \"User1\", phone: \"123456\", role: \"Student\", \"strikes\": \"1\", \"location\": \"\"}");
         System.out.println(input);
         Assert.assertTrue(PatternMatches("^\\{\"id\": [0-9]+.+}$",input),"No lists");
     }
 
 
-
-    @Test (description = "New user, method POST, return id ")
-    public void SavingNewUser() throws Exception {
-      String input =post("http://soft.it-hillel.com.ua:3000/api/users","{\"name\": \"User1\", \"phone\": \"123456\", \"role\": \"Student\"}");
+// for Student : role = "Student"/"" - empty
+    @Test (description = "Creating new user, method POST, return id ")
+    public void CreatingNewUser() throws Exception {
+     // String input =post("http://soft.it-hillel.com.ua:3000/api/users","{\"name\": \"User1\", \"phone\": \"123456\"}");
+      String input=creatingNewUser("Admin");
       Assert.assertTrue(PatternMatches("^(?:.+)\"id\":(?:[0-9]+).$",input),"New user doesn't get id");
 
     }
 
+
     @Test (description = "Delete user, method Delete, return id")
     public void DeleteUSer()throws Exception{
         String input=delete("http://soft.it-hillel.com.ua:3000/api/users/136",
-                "{\"name\": \"User1\", \"phone\": \"123456\", \"role\": \"Student\"}");
+                "{\"id\": \"136\", name: \"User1\", phone: \"123456\", role: \"Student\", \"strikes\": \"1\", \"location\": \"\"}");
         System.out.println(input);
         Assert.assertTrue(PatternMatches("^(?:.+)\"id\":(?:[0-9]+).$",input),"Not delete");
+    }
+
+    @Test(description = "Negative test for incorrect 'role")
+    public void CheckRole() throws Exception{
+        String input = creatingNewUser("IncorrectRole");
+        Assert.assertFalse(PatternMatches("^(?:.+)\"id\":(?:[0-9]+).$",input),"New user doesn't get id");
+    }
+
+    @Test (description = "Negative test for delete unpresent 'id'")
+    public  void DeleteNotUser() throws Exception{
+        String input=delete("http://soft.it-hillel.com.ua:3000/api/users/136",
+                "{\"id\": \"136\", name: \"User1\", phone: \"123456\", role: \"Student\", \"strikes\": \"1\", \"location\": \"\"}");
+        System.out.println(input);
+        Assert.assertFalse(PatternMatches("^(?:.+)\"id\":(?:[0-9]+).$",input),"Not delete");
+
     }
 }
